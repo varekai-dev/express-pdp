@@ -1,2 +1,7 @@
 node_modules
 dist
+
+# Env vars
+.env
+.env.*
+!.env.example

@@ -22,11 +22,16 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.556.0",
+    "@aws-sdk/s3-request-presigner": "^3.556.0",
+    "@types/multer": "^1.4.11",
+    "aws-sdk": "^2.1601.0",
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongoose": "^8.3.2",
+    "multer": "^1.4.5-lts.1",
     "pino": "^8.20.0",
     "pino-pretty": "^11.0.0",
     "zod": "^3.22.4"

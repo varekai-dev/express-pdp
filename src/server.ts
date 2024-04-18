@@ -1,7 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import { mongoConnect } from './utils/mongo'
+import { mongoConnect } from './config/mongo'
 import { api } from './api'
 import logger from './utils/logger'
 import loggerMiddleware from './middleware/logger.middleware'
