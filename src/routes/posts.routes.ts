@@ -7,7 +7,7 @@ import {
 	updatePostHandler,
 } from '../controller/posts.controller'
 import { createPostSchema, updatePostSchema } from '../schemas/posts.schema'
-import validateResource from '../middleware/validateResource'
+import validateResource from '../middleware/validate-resource.middleware'
 
 export const postsRouter = express.Router()
 

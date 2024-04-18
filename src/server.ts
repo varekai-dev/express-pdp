@@ -4,12 +4,14 @@ import cors from 'cors'
 import { mongoConnect } from './utils/mongo'
 import { api } from './api'
 import logger from './utils/logger'
+import loggerMiddleware from './middleware/logger.middleware'
 
 dotenv.config()
 const app = express()
 
 const PORT = process.env.PORT || 8000
 
+app.use(loggerMiddleware)
 app.use(
 	cors({
 		origin: process.env.FRONTEND_URI,
