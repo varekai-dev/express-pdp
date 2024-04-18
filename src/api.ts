@@ -1,5 +1,5 @@
 import express from 'express'
-import { postsRouter } from './posts/posts.router'
+import { postsRouter } from './routes/posts.routes'
 
 export const api = express.Router()
 

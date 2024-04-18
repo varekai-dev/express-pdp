@@ -1,11 +1,12 @@
 import mongoose from 'mongoose'
+import logger from './logger'
 
 mongoose.connection.once('open', () => {
-	console.log('MongoDB connected')
+	logger.info('MongoDB connected')
 })
 
 mongoose.connection.on('error', err => {
-	console.log('MongoDB connection error: ', err)
+	logger.error('MongoDB connection error: ', err)
 })
 
 export async function mongoConnect() {

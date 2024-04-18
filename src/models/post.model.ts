@@ -1,5 +1,12 @@
 import mongoose from 'mongoose'
 
+export interface PostDocument extends Document {
+	title: string
+	content: string
+	createdAt: Date
+	updatedAt: Date
+}
+
 const postsSchema = new mongoose.Schema(
 	{
 		title: {
@@ -17,6 +24,6 @@ const postsSchema = new mongoose.Schema(
 	}
 )
 
-const postsModel = mongoose.model('Post', postsSchema)
+const postsModel = mongoose.model<PostDocument>('Post', postsSchema)
 
 export default postsModel
