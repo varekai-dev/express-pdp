@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 export interface PostDocument extends Document {
 	title: string
 	content: string
+	imageUrl: string
 	createdAt: Date
 	updatedAt: Date
 }
@@ -15,6 +16,10 @@ const postsSchema = new mongoose.Schema(
 			unique: true,
 		},
 		content: {
+			type: String,
+			required: true,
+		},
+		imageUrl: {
 			type: String,
 			required: true,
 		},

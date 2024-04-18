@@ -13,6 +13,7 @@ import {
 	UpdatePostInput,
 } from '../schemas/posts.schema'
 import logger from '../utils/logger'
+import { uploadToS3Handler } from '../service/upload.service'
 
 export async function getAllPostsHandler(req: Request, res: Response) {
 	const posts = await getAllPosts()
@@ -38,7 +39,15 @@ export async function createPostHandler(
 ) {
 	try {
 		const postData = req.body
-		const newPost = await createPost(postData)
+		let imageUrl
+
+		if (req.file) {
+			imageUrl = await uploadToS3Handler(req.file)
+		}
+		const newPost = await createPost({
+			...postData,
+			imageUrl,
+		})
 		res.status(201).send(newPost)
 	} catch (error: any) {
 		logger.error(error)
@@ -72,7 +81,12 @@ export async function updatePostHandler(
 ) {
 	const { id } = req.params
 	const data = req.body
+
 	try {
+		if (req.file) {
+			const imageUrl = await uploadToS3Handler(req.file)
+			data.imageUrl = imageUrl
+		}
 		const updatedPost = await updatePost(id, data)
 		res.send(updatedPost)
 	} catch (error: any) {

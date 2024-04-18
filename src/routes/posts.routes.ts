@@ -8,11 +8,24 @@ import {
 } from '../controller/posts.controller'
 import { createPostSchema, updatePostSchema } from '../schemas/posts.schema'
 import validateResource from '../middleware/validate-resource.middleware'
+import multer from 'multer'
+
+const upload = multer({ storage: multer.memoryStorage() })
 
 export const postsRouter = express.Router()
 
 postsRouter.get('/', getAllPostsHandler)
-postsRouter.post('/', validateResource(createPostSchema), createPostHandler)
+postsRouter.post(
+	'/',
+	upload.single('file'),
+	validateResource(createPostSchema),
+	createPostHandler
+)
 postsRouter.get('/:id', getPostHandler)
 postsRouter.delete('/:id', removePostHandler)
-postsRouter.patch('/:id', validateResource(updatePostSchema), updatePostHandler)
+postsRouter.patch(
+	'/:id',
+	upload.single('file'),
+	validateResource(updatePostSchema),
+	updatePostHandler
+)

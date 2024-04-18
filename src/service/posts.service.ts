@@ -1,6 +1,7 @@
 import { UpdateQuery, Types } from 'mongoose'
 import postModel, { PostDocument } from '../models/post.model'
 import { CreatePostInput } from '../schemas/posts.schema'
+import { deleteFromS3Handler } from './upload.service'
 
 async function findOnePostOrFail(id: string) {
 	const post = await postModel.findById(new Types.ObjectId(id)).select('-__v')
@@ -14,7 +15,9 @@ export async function getAllPosts() {
 	return await postModel.find({})
 }
 
-export async function createPost(input: CreatePostInput['body']) {
+export async function createPost(
+	input: CreatePostInput['body'] & { imageUrl?: string }
+) {
 	return await postModel.create(input)
 }
 
@@ -32,7 +35,11 @@ export async function updatePost(
 	data: UpdateQuery<Partial<PostDocument>>
 ) {
 	const post = await findOnePostOrFail(id)
+	if (data.imageUrl) {
+		await deleteFromS3Handler(post.imageUrl)
+	}
 	post.set({
+		...(data.imageUrl && { imageUrl: data.imageUrl }),
 		...(data.title && { title: data.title }),
 		...(data.content && { content: data.content }),
 	})

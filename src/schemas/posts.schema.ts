@@ -1,4 +1,5 @@
-import { TypeOf, object, string } from 'zod'
+import { TypeOf, object, string, any } from 'zod'
+import { fileValidation } from '../validation/file.validation'
 
 const createPayload = {
 	body: object({
@@ -13,10 +14,12 @@ const createPayload = {
 			.min(4)
 			.max(1000),
 	}),
+	file: fileValidation,
 }
 
 const updatePayload = {
 	body: createPayload.body.partial(),
+	file: fileValidation.optional(),
 }
 
 const params = {
