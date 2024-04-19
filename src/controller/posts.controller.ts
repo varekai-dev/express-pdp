@@ -14,12 +14,16 @@ import {
 	DownloadPostInput,
 	UpdatePostInput,
 } from '../schemas/posts.schema'
-import logger from '../utils/logger'
 import { uploadToS3Handler } from '../service/upload.service'
+import { handleError } from '../utils/handleError'
 
 export async function getAllPostsHandler(req: Request, res: Response) {
-	const posts = await getAllPosts()
-	res.send(posts)
+	try {
+		const posts = await getAllPosts()
+		res.send(posts)
+	} catch (error) {
+		handleError(error, res)
+	}
 }
 
 export async function getPostHandler(req: Request, res: Response) {
@@ -27,11 +31,8 @@ export async function getPostHandler(req: Request, res: Response) {
 		const { id } = req.params
 		const post = await getPost(id)
 		res.send(post)
-	} catch (error: any) {
-		logger.error(error)
-		res.status(404).send({
-			error: error.message,
-		})
+	} catch (error) {
+		handleError(error, res)
 	}
 }
 
@@ -51,11 +52,8 @@ export async function createPostHandler(
 			imageUrl,
 		})
 		res.status(201).send(newPost)
-	} catch (error: any) {
-		logger.error(error)
-		res.status(409).send({
-			error: error.message,
-		})
+	} catch (error) {
+		handleError(error, res)
 	}
 }
 
@@ -69,11 +67,8 @@ export async function removePostHandler(
 		res.send({
 			status: 'success',
 		})
-	} catch (error: any) {
-		logger.error(error)
-		res.status(404).send({
-			error: error.message,
-		})
+	} catch (error) {
+		handleError(error, res)
 	}
 }
 
@@ -91,11 +86,8 @@ export async function updatePostHandler(
 		}
 		const updatedPost = await updatePost(id, data)
 		res.send(updatedPost)
-	} catch (error: any) {
-		logger.error(error)
-		res.status(404).send({
-			error: error.message,
-		})
+	} catch (error) {
+		handleError(error, res)
 	}
 }
 
@@ -107,11 +99,8 @@ export async function getPostDownloadHandler(
 	const downloadUrl = await getPostDownload(id)
 	res.redirect(downloadUrl)
 	try {
-	} catch (error: any) {
-		logger.error(error)
-		res.status(404).send({
-			error: error.message,
-		})
+	} catch (error) {
+		handleError(error, res)
 	}
 }
 
@@ -120,10 +109,7 @@ export async function getPostRenderHandler(req: Request, res: Response) {
 		const { id } = req.params
 		const post = await getPost(id)
 		res.render('post.template.hbs', post)
-	} catch (error: any) {
-		logger.error(error)
-		res.status(404).send({
-			error: error.message,
-		})
+	} catch (error) {
+		handleError(error, res)
 	}
 }
