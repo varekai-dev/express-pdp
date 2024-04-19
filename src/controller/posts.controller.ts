@@ -114,3 +114,16 @@ export async function getPostDownloadHandler(
 		})
 	}
 }
+
+export async function getPostRenderHandler(req: Request, res: Response) {
+	try {
+		const { id } = req.params
+		const post = await getPost(id)
+		res.render('post.template.hbs', post)
+	} catch (error: any) {
+		logger.error(error)
+		res.status(404).send({
+			error: error.message,
+		})
+	}
+}

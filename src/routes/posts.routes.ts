@@ -6,6 +6,7 @@ import {
 	removePostHandler,
 	updatePostHandler,
 	getPostDownloadHandler,
+	getPostRenderHandler,
 } from '../controller/posts.controller'
 import { createPostSchema, updatePostSchema } from '../schemas/posts.schema'
 import validateResource from '../middleware/validate-resource.middleware'
@@ -30,4 +31,5 @@ postsRouter.patch(
 	validateResource(updatePostSchema),
 	updatePostHandler
 )
+postsRouter.get('/:id/render', getPostRenderHandler)
 postsRouter.get('/:id/download', getPostDownloadHandler)

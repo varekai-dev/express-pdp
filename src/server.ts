@@ -5,11 +5,16 @@ import { mongoConnect } from './config/mongo'
 import { api } from './api'
 import logger from './utils/logger'
 import loggerMiddleware from './middleware/logger.middleware'
-
-dotenv.config()
-const app = express()
+import path from 'path'
 
 const PORT = process.env.PORT || 8000
+
+dotenv.config()
+
+const app = express()
+
+app.set('view engine', 'hbs')
+app.set('views', path.join(__dirname, '..', 'templates'))
 
 app.use(loggerMiddleware)
 app.use(
@@ -18,7 +23,6 @@ app.use(
 	})
 )
 app.use(express.json())
-
 app.use('/api/v1', api)
 
 async function startServer() {
