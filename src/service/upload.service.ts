@@ -3,8 +3,11 @@ import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import logger from '../utils/logger'
 import dotenv from 'dotenv'
 import { createS3Url } from '../utils/createS3Url'
+import AWS from 'aws-sdk'
 
 dotenv.config()
+
+const s3 = new AWS.S3()
 
 export async function uploadToS3Handler(file: Express.Multer.File) {
 	if (!file) {
@@ -41,4 +44,16 @@ export async function deleteFromS3Handler(imageName: string) {
 		logger.error(err)
 		throw new Error('Error deleting file from S3')
 	}
+}
+
+export function getS3DownloadUrl(imageUrl: string) {
+	const imageName = imageUrl.split('.com/')[1]
+
+	const params = {
+		Bucket: process.env.AWS_BUCKET_NAME,
+		Key: imageName,
+		Expires: 60 * 60, // URL expires in 1 hour
+	}
+	const downloadUrl = s3.getSignedUrl('getObject', params)
+	return downloadUrl
 }

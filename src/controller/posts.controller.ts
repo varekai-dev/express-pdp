@@ -4,12 +4,14 @@ import {
 	createPost,
 	getAllPosts,
 	getPost,
+	getPostDownload,
 	removePost,
 	updatePost,
 } from '../service/posts.service'
 import {
 	CreatePostInput,
 	DeletePostInput,
+	DownloadPostInput,
 	UpdatePostInput,
 } from '../schemas/posts.schema'
 import logger from '../utils/logger'
@@ -89,6 +91,22 @@ export async function updatePostHandler(
 		}
 		const updatedPost = await updatePost(id, data)
 		res.send(updatedPost)
+	} catch (error: any) {
+		logger.error(error)
+		res.status(404).send({
+			error: error.message,
+		})
+	}
+}
+
+export async function getPostDownloadHandler(
+	req: Request<DownloadPostInput['params']>,
+	res: Response
+) {
+	const { id } = req.params
+	const downloadUrl = await getPostDownload(id)
+	res.redirect(downloadUrl)
+	try {
 	} catch (error: any) {
 		logger.error(error)
 		res.status(404).send({

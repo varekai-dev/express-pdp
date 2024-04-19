@@ -1,7 +1,7 @@
 import { UpdateQuery, Types } from 'mongoose'
 import postModel, { PostDocument } from '../models/post.model'
 import { CreatePostInput } from '../schemas/posts.schema'
-import { deleteFromS3Handler } from './upload.service'
+import { deleteFromS3Handler, getS3DownloadUrl } from './upload.service'
 
 async function findOnePostOrFail(id: string) {
 	const post = await postModel.findById(new Types.ObjectId(id)).select('-__v')
@@ -44,4 +44,10 @@ export async function updatePost(
 		...(data.content && { content: data.content }),
 	})
 	return post.save()
+}
+
+export async function getPostDownload(id: string) {
+	const post = await findOnePostOrFail(id)
+	const downloadUrl = getS3DownloadUrl(post.imageUrl)
+	return downloadUrl
 }

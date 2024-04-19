@@ -38,6 +38,10 @@ export const deletePostSchema = object({
 	...params,
 })
 
+export const downloadPostSchema = object({
+	...params,
+})
+
 export const updatePostSchema = object({
 	...params,
 	...updatePayload,
@@ -48,3 +52,5 @@ export type UpdatePostInput = TypeOf<typeof updatePostSchema>
 export type CreatePostInput = TypeOf<typeof createPostSchema>
 
 export type DeletePostInput = TypeOf<typeof deletePostSchema>
+
+export type DownloadPostInput = TypeOf<typeof downloadPostSchema>
