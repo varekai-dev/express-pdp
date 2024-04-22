@@ -6,6 +6,7 @@ import { api } from './api'
 import logger from './utils/logger'
 import loggerMiddleware from './middleware/logger.middleware'
 import path from 'path'
+import './config/passport'
 
 const PORT = process.env.PORT || 8000
 
