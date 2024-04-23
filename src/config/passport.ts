@@ -40,7 +40,10 @@ passport.use(
 			if (!user) {
 				return done(null, false)
 			}
-			done(null, user)
+
+			done(null, {
+				userId: user._id,
+			})
 		} catch (error) {
 			done(error, false)
 		}

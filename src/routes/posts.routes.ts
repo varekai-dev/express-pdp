@@ -17,17 +17,19 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 export const postsRouter = express.Router()
 
-postsRouter.get('/', authMiddleware, getAllPostsHandler)
+postsRouter.get('/', getAllPostsHandler)
 postsRouter.post(
 	'/',
+	authMiddleware,
 	upload.single('file'),
 	validateResource(createPostSchema),
 	createPostHandler
 )
 postsRouter.get('/:id', getPostHandler)
-postsRouter.delete('/:id', removePostHandler)
+postsRouter.delete('/:id', authMiddleware, removePostHandler)
 postsRouter.patch(
 	'/:id',
+	authMiddleware,
 	upload.single('file'),
 	validateResource(updatePostSchema),
 	updatePostHandler

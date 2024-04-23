@@ -37,7 +37,7 @@ export async function httpGoogleAuthHandler(req: Request, res: Response) {
 		const email = req.user?.emails?.[0].value
 		const { refreshToken, accessToken } = await userService.googleLogin(
 			email!,
-			username
+			username!
 		)
 		res.redirect(
 			`${process.env.FRONTEND_URI}/login?accessToken=${refreshToken}&refreshToken=${accessToken}`

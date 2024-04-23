@@ -3,6 +3,7 @@ import { AuthType } from '../enums/auth-type.enum'
 // import bcrypt from 'bcrypt'
 
 export interface UserDocument extends Document {
+	_id: mongoose.Types.ObjectId
 	username: string
 	email: string
 	createdAt: Date

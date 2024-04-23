@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
-
+import { Types } from 'mongoose'
 import {
 	createPost,
+	findOnePostOrFail,
 	getAllPosts,
 	getPost,
 	getPostDownload,
@@ -41,6 +42,7 @@ export async function createPostHandler(
 	res: Response
 ) {
 	try {
+		const userId = req.user?.userId
 		const postData = req.body
 		let imageUrl
 
@@ -50,6 +52,7 @@ export async function createPostHandler(
 		const newPost = await createPost({
 			...postData,
 			imageUrl,
+			createdBy: String(userId),
 		})
 		res.status(201).send(newPost)
 	} catch (error) {
@@ -62,8 +65,9 @@ export async function removePostHandler(
 	res: Response
 ) {
 	try {
+		const userId = req.user?.userId
 		const { id } = req.params
-		await removePost(id)
+		await removePost(id, userId)
 		res.send({
 			status: 'success',
 		})
@@ -76,10 +80,17 @@ export async function updatePostHandler(
 	req: Request<UpdatePostInput['params']>,
 	res: Response
 ) {
+	const userId = req.user?.userId
 	const { id } = req.params
 	const data = req.body
 
 	try {
+		const post = await findOnePostOrFail(id)
+		console.log(userId, post.createdBy._id)
+		if (String(userId) !== String(post.createdBy._id)) {
+			throw new Error('Unauthorized')
+		}
+
 		if (req.file) {
 			const imageUrl = await uploadToS3Handler(req.file)
 			data.imageUrl = imageUrl

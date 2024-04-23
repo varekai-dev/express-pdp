@@ -3,8 +3,11 @@ import postModel, { PostDocument } from '../models/post.model'
 import { CreatePostInput } from '../schemas/posts.schema'
 import { deleteFromS3Handler, getS3DownloadUrl } from './upload.service'
 
-async function findOnePostOrFail(id: string) {
-	const post = await postModel.findById(new Types.ObjectId(id)).select('-__v')
+export async function findOnePostOrFail(id: string) {
+	const post = await postModel
+		.findById(new Types.ObjectId(id))
+		.select('-__v')
+		.populate('createdBy', 'username _id')
 	if (!post) {
 		throw new Error('Post not found')
 	}
@@ -12,11 +15,11 @@ async function findOnePostOrFail(id: string) {
 }
 
 export async function getAllPosts() {
-	return await postModel.find({})
+	return await postModel.find({}).populate('createdBy', 'username _id')
 }
 
 export async function createPost(
-	input: CreatePostInput['body'] & { imageUrl?: string }
+	input: CreatePostInput['body'] & { imageUrl?: string; createdBy: string }
 ) {
 	return await postModel.create(input)
 }
@@ -25,8 +28,11 @@ export async function getPost(id: string) {
 	return await findOnePostOrFail(id)
 }
 
-export async function removePost(id: string) {
-	await findOnePostOrFail(id)
+export async function removePost(id: string, userId?: string) {
+	const post = await findOnePostOrFail(id)
+	if (String(post.createdBy._id) !== String(userId)) {
+		throw new Error('Unauthorized')
+	}
 	return await postModel.findByIdAndDelete(id)
 }
 
@@ -35,6 +41,7 @@ export async function updatePost(
 	data: UpdateQuery<Partial<PostDocument>>
 ) {
 	const post = await findOnePostOrFail(id)
+
 	if (data.imageUrl) {
 		await deleteFromS3Handler(post.imageUrl)
 	}
