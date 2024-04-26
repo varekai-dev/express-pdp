@@ -16,6 +16,9 @@ import {
 } from '../schemas/posts.schema'
 import { uploadToS3Handler } from '../service/upload.service'
 import { handleError } from '../utils/handleError'
+import { sockets } from '../server'
+import { getUser } from '../service/user.service'
+import { SocketType } from '../enums/socketTypes'
 
 export async function getAllPostsHandler(req: Request, res: Response) {
 	try {
@@ -52,6 +55,11 @@ export async function createPostHandler(
 			...postData,
 			imageUrl,
 			createdBy: String(userId),
+		})
+		const currentUser = await getUser(userId)
+
+		currentUser.subscribers.forEach(subscriber => {
+			sockets.to(String(subscriber)).emit(SocketType.NewPost, newPost)
 		})
 		res.status(201).send(newPost)
 	} catch (error) {
