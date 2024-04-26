@@ -3,6 +3,17 @@ import bcrypt from 'bcrypt'
 import userModel from '../models/user.model'
 import { AuthType } from '../enums/auth-type.enum'
 import jwt from 'jsonwebtoken'
+import { Types } from 'mongoose'
+
+export async function findOneUserOrFail(id: string) {
+	const user = await userModel
+		.findById(new Types.ObjectId(id))
+		.select('-__v -password -authType')
+	if (!user) {
+		throw new Error('User not found')
+	}
+	return user
+}
 
 function generateJwtToken(userId: string, expiresIn: number) {
 	return jwt.sign({ userId }, String(process.env.JWT_SECRET), {
@@ -77,4 +88,32 @@ export async function googleLogin(email: string, username: string) {
 		})
 	}
 	return generateTokens(String(userInDb._id))
+}
+
+export async function getUser(id?: string) {
+	const user = await userModel.findById(id).select('-password -__v -updatedAt')
+	if (!user) {
+		throw new Error('User not found')
+	}
+	return user
+}
+
+export async function subscribeUser(id: string, userId?: string) {
+	const user = await findOneUserOrFail(id)
+	let message = ''
+	if (String(id) === String(userId)) {
+		throw new Error('You cannot subscribe to yourself')
+	}
+	if (user.subscribers.includes(new Types.ObjectId(userId))) {
+		const updatedSubscribers = user.subscribers.filter(
+			subscriber => String(subscriber) !== String(userId)
+		)
+		user.subscribers = updatedSubscribers
+		message = 'Unsubscribed successfully'
+	} else {
+		user.subscribers.push(new Types.ObjectId(userId))
+		message = 'Subscribed successfully'
+	}
+	await user.save()
+	return message
 }

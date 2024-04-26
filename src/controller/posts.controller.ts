@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { Types } from 'mongoose'
 import {
 	createPost,
 	findOnePostOrFail,
@@ -86,7 +85,6 @@ export async function updatePostHandler(
 
 	try {
 		const post = await findOnePostOrFail(id)
-		console.log(userId, post.createdBy._id)
 		if (String(userId) !== String(post.createdBy._id)) {
 			throw new Error('Unauthorized')
 		}

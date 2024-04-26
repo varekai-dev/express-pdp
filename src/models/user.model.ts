@@ -30,6 +30,13 @@ const userSchema = new mongoose.Schema(
 			enum: Object.values(AuthType),
 			default: AuthType.Local,
 		},
+		subscribers: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'User',
+				default: [],
+			},
+		],
 	},
 	{
 		timestamps: true,
