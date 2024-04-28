@@ -19,6 +19,7 @@ import { handleError } from '../utils/handleError'
 import { sockets } from '../server'
 import { getUser } from '../service/user.service'
 import { SocketType } from '../enums/socket-type.enum'
+import { ApiError } from '../utils/apiError'
 
 export async function getAllPostsHandler(req: Request, res: Response) {
 	try {
@@ -94,7 +95,10 @@ export async function updatePostHandler(
 	try {
 		const post = await findOnePostOrFail(id)
 		if (String(userId) !== String(post.createdBy._id)) {
-			throw new Error('Unauthorized')
+			throw new ApiError({
+				message: 'You are not allowed to update this post',
+				errorCode: 403,
+			})
 		}
 
 		if (req.file) {

@@ -2,6 +2,7 @@ import { UpdateQuery, Types } from 'mongoose'
 import postModel, { PostDocument } from '../models/post.model'
 import { CreatePostInput } from '../schemas/posts.schema'
 import { deleteFromS3Handler, getS3DownloadUrl } from './upload.service'
+import { ApiError } from '../utils/apiError'
 
 export async function findOnePostOrFail(id: string) {
 	const post = await postModel
@@ -9,7 +10,7 @@ export async function findOnePostOrFail(id: string) {
 		.select('-__v')
 		.populate('createdBy', 'username _id')
 	if (!post) {
-		throw new Error('Post not found')
+		throw new ApiError({ message: 'Post not found', errorCode: 404 })
 	}
 	return post
 }
@@ -31,7 +32,10 @@ export async function getPost(id: string) {
 export async function removePost(id: string, userId?: string) {
 	const post = await findOnePostOrFail(id)
 	if (String(post.createdBy._id) !== String(userId)) {
-		throw new Error('Unauthorized')
+		throw new ApiError({
+			message: 'You are not authorized to delete this post',
+			errorCode: 403,
+		})
 	}
 	return await postModel.findByIdAndDelete(id)
 }

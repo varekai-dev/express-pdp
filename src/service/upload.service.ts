@@ -4,6 +4,7 @@ import logger from '../utils/logger'
 import dotenv from 'dotenv'
 import { createS3Url } from '../utils/createS3Url'
 import AWS from 'aws-sdk'
+import { ApiError } from '../utils/apiError'
 
 dotenv.config()
 
@@ -12,7 +13,10 @@ const s3 = new AWS.S3()
 export async function uploadToS3Handler(file: Express.Multer.File) {
 	if (!file) {
 		logger.error('No file uploaded')
-		throw new Error('No file uploaded')
+		throw new ApiError({
+			message: 'No file uploaded',
+			errorCode: 400,
+		})
 	}
 	// Upload file to S3
 	const params = {
@@ -42,7 +46,10 @@ export async function deleteFromS3Handler(imageName: string) {
 		await s3Client.send(new DeleteObjectCommand(params))
 	} catch (err) {
 		logger.error(err)
-		throw new Error('Error deleting file from S3')
+		throw new ApiError({
+			message: 'Failed to delete image from S3',
+			errorCode: 500,
+		})
 	}
 }
 

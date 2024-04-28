@@ -4,13 +4,17 @@ import userModel from '../models/user.model'
 import { AuthType } from '../enums/auth-type.enum'
 import jwt from 'jsonwebtoken'
 import { Types } from 'mongoose'
+import { ApiError } from '../utils/apiError'
 
 export async function findOneUserOrFail(id: string) {
 	const user = await userModel
 		.findById(new Types.ObjectId(id))
 		.select('-__v -password -authType')
 	if (!user) {
-		throw new Error('User not found')
+		throw new ApiError({
+			message: 'User not found',
+			errorCode: 404,
+		})
 	}
 	return user
 }
@@ -44,13 +48,19 @@ export async function registerUser(user: CreateUserInput['body']) {
 	const hashedPassword = await hashPassword(user.password)
 	const emailExist = await userModel.findOne({ email: user.email })
 	if (emailExist) {
-		throw new Error('Email already exists')
+		throw new ApiError({
+			message: 'Email already exists',
+			errorCode: 400,
+		})
 	}
 
 	const usernameExist = await userModel.findOne({ username: user.username })
 
 	if (usernameExist) {
-		throw new Error('Username already exists')
+		throw new ApiError({
+			message: 'Username already exists',
+			errorCode: 400,
+		})
 	}
 
 	const newUser = await userModel.create({
@@ -66,13 +76,19 @@ export async function registerUser(user: CreateUserInput['body']) {
 export async function loginUser(email: string, password: string) {
 	const findUser = await userModel.findOne({ email })
 	if (!findUser) {
-		throw new Error('Email or password is wrong')
+		throw new ApiError({
+			message: 'Email or password is wrong',
+			errorCode: 400,
+		})
 	}
 
 	if (findUser.authType === AuthType.Local && findUser.password) {
 		const validPassword = await bcrypt.compare(password, findUser.password)
 		if (!validPassword) {
-			throw new Error('Email or password is wrong')
+			throw new ApiError({
+				message: 'Email or password is wrong',
+				errorCode: 400,
+			})
 		}
 	}
 	return generateTokens(String(findUser._id))
@@ -93,7 +109,10 @@ export async function googleLogin(email: string, username: string) {
 export async function getUser(id?: string) {
 	const user = await userModel.findById(id).select('-password -__v -updatedAt')
 	if (!user) {
-		throw new Error('User not found')
+		throw new ApiError({
+			message: 'User not found',
+			errorCode: 404,
+		})
 	}
 	return user
 }
@@ -102,7 +121,10 @@ export async function subscribeUser(id: string, userId?: string) {
 	const user = await findOneUserOrFail(id)
 	let message = ''
 	if (String(id) === String(userId)) {
-		throw new Error('You cannot subscribe to yourself')
+		throw new ApiError({
+			message: 'You cannot subscribe to yourself',
+			errorCode: 400,
+		})
 	}
 	if (user.subscribers.includes(new Types.ObjectId(userId))) {
 		const updatedSubscribers = user.subscribers.filter(

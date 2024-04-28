@@ -51,17 +51,15 @@ describe('Auth API', () => {
 	})
 
 	it('should return 404 if password or email is wrong', async () => {
-		await request(app)
+		const response = await request(app)
 			.post('/api/v1/auth/login')
 			.send({
 				email: faker.internet.email(),
 				password: faker.internet.password(8),
 			})
-			.expect(404)
-			.then(response => {
-				expect(response.body).toMatchObject({
-					error: 'Email or password is wrong',
-				})
-			})
+			.expect(400)
+		expect(response.body).toMatchObject({
+			errorMessage: 'Email or password is wrong',
+		})
 	})
 })
