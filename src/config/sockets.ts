@@ -19,11 +19,13 @@ export function initializeSocket(server: Server) {
 
 	io.on('connect', socket => {
 		const roomId = getUserIdFromSocket(socket)
-		socket.join(roomId)
-		socket.on('disconnect', () => {
-			socket.leave(roomId)
-			console.log('a user disconnected')
-		})
+		if (roomId) {
+			socket.join(roomId)
+			socket.on('disconnect', () => {
+				socket.leave(roomId)
+				console.log('a user disconnected')
+			})
+		}
 	})
 	return io
 }

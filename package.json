@@ -1,33 +1,47 @@
 {
   "name": "express-pdp",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/server.js",
   "scripts": {
-    "test": "jest",
+    "test": "NODE_ENV=test jest",
+    "test-watch": "NODE_ENV=test jest --watch",
     "build": "npx tsc",
-    "start": "node dist/server.js",
-    "dev": "npx tsc -w & nodemon dist/server.js",
+    "start": "node dist/server",
+    "dev": "npx tsc -w & nodemon dist/server",
     "migration:create": "migrate-mongo create",
     "migration:status": "migrate-mongo status",
     "migration:up": "migrate-mongo up",
     "migration:down": "migrate-mongo down"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!variables/.*)"
+    ]
+  },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/mock-fs": "^4.13.4",
     "@types/node": "^20.12.7",
     "@types/passport": "^1.0.16",
     "@types/passport-google-oauth20": "^2.0.14",
     "@types/passport-jwt": "^4.0.1",
+    "@types/supertest": "^6.0.2",
     "jest": "^29.7.0",
+    "mock-fs": "^5.2.0",
+    "mongodb-memory-server": "^9.2.0",
     "node-type": "^1.1.1",
     "nodemon": "^3.1.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.1.2",
     "typescript": "^5.4.5"
   },
   "dependencies": {
@@ -40,6 +54,7 @@
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "form-data": "^4.0.0",
     "hbs": "^4.2.0",
     "jsonwebtoken": "^9.0.2",
     "migrate-mongo": "^11.0.0",
@@ -50,6 +65,7 @@
     "passport-jwt": "^4.0.1",
     "pino": "^8.20.0",
     "pino-pretty": "^11.0.0",
+    "remove": "^0.1.5",
     "socket.io": "^4.7.5",
     "zod": "^3.22.4"
   }

@@ -18,7 +18,7 @@ import { uploadToS3Handler } from '../service/upload.service'
 import { handleError } from '../utils/handleError'
 import { sockets } from '../server'
 import { getUser } from '../service/user.service'
-import { SocketType } from '../enums/socketTypes'
+import { SocketType } from '../enums/socket-type.enum'
 
 export async function getAllPostsHandler(req: Request, res: Response) {
 	try {
