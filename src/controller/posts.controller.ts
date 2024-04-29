@@ -76,7 +76,7 @@ export async function removePostHandler(
 		const userId = req.user?.userId
 		const { id } = req.params
 		await removePost(id, userId)
-		res.send({
+		res.status(204).send({
 			status: 'success',
 		})
 	} catch (error) {

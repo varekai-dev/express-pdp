@@ -6,13 +6,21 @@ const createPayload = {
 		title: string({
 			required_error: 'Title is required',
 		})
-			.min(1)
-			.max(255),
+			.min(1, {
+				message: 'Title should be at least 1 character long',
+			})
+			.max(255, {
+				message: 'Title should be at most 255 characters long',
+			}),
 		content: string({
 			required_error: 'Content is required',
 		})
-			.min(4)
-			.max(1000),
+			.min(4, {
+				message: 'Content should be at least 4 characters long',
+			})
+			.max(1000, {
+				message: 'Content should be at most 1000 characters long',
+			}),
 	}),
 	file: fileValidation,
 }

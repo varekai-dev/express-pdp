@@ -10,13 +10,13 @@ const createPayload = {
 		password: string({
 			required_error: 'Password is required',
 		})
-			.min(8)
-			.max(64),
+			.min(8, 'Password must be at least 8 characters')
+			.max(64, 'Password must be at most 64 characters'),
 		username: string({
 			required_error: 'Username is required',
 		})
-			.min(4)
-			.max(16),
+			.min(4, 'Username must be at least 4 characters')
+			.max(16, 'Username must be at most 16 characters'),
 	}),
 }
 
