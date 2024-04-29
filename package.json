@@ -15,9 +15,6 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/__test__/jest.setup.ts"
-    ],
     "transform": {
       "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
     },

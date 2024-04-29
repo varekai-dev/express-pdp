@@ -3,8 +3,14 @@ import { app } from '../../server'
 import { faker } from '@faker-js/faker'
 import { fakeUser } from '../data/fakeUser'
 import { createFakeUser } from '../utils/createFakeUser'
+import {
+	setupMongoServer,
+	teardownMongoServer,
+} from '../utils/setupMongoServer'
 
 describe('Auth API', () => {
+	beforeAll(setupMongoServer)
+	afterAll(teardownMongoServer)
 	it('should register new user', async () => {
 		try {
 			const response = await request(app)
@@ -18,7 +24,7 @@ describe('Auth API', () => {
 				subscribers: [],
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 	it('should login user and return tokens', async () => {
@@ -37,7 +43,7 @@ describe('Auth API', () => {
 				refreshToken: expect.any(String),
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -55,7 +61,7 @@ describe('Auth API', () => {
 				errorMessage: 'Email or password is wrong',
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -80,7 +86,7 @@ describe('Auth API', () => {
 			)
 			expect(errors).toEqual(responseErrors)
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -96,7 +102,7 @@ describe('Auth API', () => {
 				.set('user', JSON.stringify(mockUser))
 				.expect(302)
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 })

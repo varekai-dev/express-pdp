@@ -6,6 +6,10 @@ import { MAX_FILE_SIZE_MB } from '../../constants/maxSize'
 import { createFakeUser } from '../utils/createFakeUser'
 import { fakePost } from '../data/fakePost'
 import { createFakePost } from '../utils/createFakePost'
+import {
+	setupMongoServer,
+	teardownMongoServer,
+} from '../utils/setupMongoServer'
 
 const fakeImageUrl = 'https://test-bucket.s3.amazonaws.com/test.jpg'
 let accessToken: string
@@ -14,6 +18,7 @@ describe('Posts API', () => {
 	let uploadToS3Spy: jest.SpyInstance
 	let getS3DownloadUrlSpy: jest.SpyInstance
 	beforeAll(async () => {
+		setupMongoServer()
 		uploadToS3Spy = jest
 			.spyOn(uploadService, 'uploadToS3Handler')
 			.mockResolvedValue('https://test-bucket.s3.amazonaws.com/test.jpg')
@@ -25,6 +30,7 @@ describe('Posts API', () => {
 		accessToken = fakeUser.accessToken
 	})
 	afterAll(() => {
+		teardownMongoServer()
 		uploadToS3Spy.mockRestore()
 		getS3DownloadUrlSpy.mockRestore()
 	})
@@ -38,7 +44,7 @@ describe('Posts API', () => {
 				content: requestData?.content,
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -71,7 +77,7 @@ describe('Posts API', () => {
 			)
 			expect(responseErrors).toEqual(errors)
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -85,7 +91,7 @@ describe('Posts API', () => {
 			expect(response.text).toContain(responseData.title)
 			expect(response.text).toContain(responseData.content)
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -98,7 +104,7 @@ describe('Posts API', () => {
 
 			expect(response.header.location).toBe(fakeImageUrl)
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -117,7 +123,7 @@ describe('Posts API', () => {
 				content: responseData.content,
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -134,7 +140,7 @@ describe('Posts API', () => {
 				content: responseData.content,
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -157,7 +163,7 @@ describe('Posts API', () => {
 				content: updatedPost.content,
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -174,7 +180,7 @@ describe('Posts API', () => {
 				.set('Authorization', `Bearer ${accessToken}`)
 				.expect(404)
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 })

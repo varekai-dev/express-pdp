@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createS3Url should return the correct S3 URL 1`] = `"https://express-pdp.s3.eu-central-1.amazonaws.com/test.jpg"`;

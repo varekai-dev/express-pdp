@@ -12,5 +12,6 @@ export function getUserIdFromSocket(socket: Socket) {
 		token,
 		String(process.env.JWT_SECRET)
 	) as JwtPayload
+
 	return String(decoded.userId)
 }

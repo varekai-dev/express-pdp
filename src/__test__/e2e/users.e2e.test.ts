@@ -2,8 +2,14 @@ import { app } from '../../server'
 import { createFakeUser } from '../utils/createFakeUser'
 
 import request from 'supertest'
+import {
+	setupMongoServer,
+	teardownMongoServer,
+} from '../utils/setupMongoServer'
 
 describe('Users API', () => {
+	beforeAll(setupMongoServer)
+	afterAll(teardownMongoServer)
 	it('should return information about current user', async () => {
 		try {
 			const { accessToken, username, email } = await createFakeUser()
@@ -17,7 +23,7 @@ describe('Users API', () => {
 				email,
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -34,7 +40,7 @@ describe('Users API', () => {
 				email,
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -52,7 +58,7 @@ describe('Users API', () => {
 				message: 'Subscribed successfully',
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -73,7 +79,7 @@ describe('Users API', () => {
 				message: 'Unsubscribed successfully',
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 
@@ -90,7 +96,7 @@ describe('Users API', () => {
 				errorMessage: 'You cannot subscribe to yourself',
 			})
 		} catch (error) {
-			console.log(error)
+			throw new Error(String(error))
 		}
 	})
 })
