@@ -7,6 +7,7 @@ import type {
 } from 'passport-google-oauth20'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import userModel from '../models/user.model'
+import { Types } from 'mongoose'
 import type { StrategyOptionsWithoutRequest } from 'passport-jwt'
 
 import dotenv from 'dotenv'
@@ -36,7 +37,7 @@ const JWT_OPTIONS = {
 passport.use(
 	new JwtStrategy(JWT_OPTIONS, async function (payload, done) {
 		try {
-			const user = await userModel.findById(payload.userId)
+			const user = await userModel.findById(new Types.ObjectId(payload.userId))
 			if (!user) {
 				return done(null, false)
 			}

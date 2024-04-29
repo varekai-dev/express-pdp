@@ -1,14 +1,18 @@
 import { s3Client } from '../config/aws'
-import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
+import {
+	DeleteObjectCommand,
+	GetObjectCommand,
+	PutObjectCommand,
+} from '@aws-sdk/client-s3'
 import logger from '../utils/logger'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+
 import dotenv from 'dotenv'
 import { createS3Url } from '../utils/createS3Url'
-import AWS from 'aws-sdk'
+
 import { ApiError } from '../utils/apiError'
 
 dotenv.config()
-
-const s3 = new AWS.S3()
 
 export async function uploadToS3Handler(file: Express.Multer.File) {
 	if (!file) {
@@ -53,7 +57,7 @@ export async function deleteFromS3Handler(imageName: string) {
 	}
 }
 
-export function getS3DownloadUrl(imageUrl: string) {
+export async function getS3DownloadUrl(imageUrl: string) {
 	const imageName = imageUrl.split('.com/')[1]
 
 	const params = {
@@ -61,6 +65,6 @@ export function getS3DownloadUrl(imageUrl: string) {
 		Key: imageName,
 		Expires: 60 * 60, // URL expires in 1 hour
 	}
-	const downloadUrl = s3.getSignedUrl('getObject', params)
+	const downloadUrl = await getSignedUrl(s3Client, new GetObjectCommand(params))
 	return downloadUrl
 }

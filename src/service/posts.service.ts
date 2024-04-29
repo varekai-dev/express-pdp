@@ -37,7 +37,7 @@ export async function removePost(id: string, userId?: string) {
 			errorCode: 403,
 		})
 	}
-	return await postModel.findByIdAndDelete(id)
+	return await postModel.findByIdAndDelete(new Types.ObjectId(id))
 }
 
 export async function updatePost(

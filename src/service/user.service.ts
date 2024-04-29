@@ -32,7 +32,7 @@ async function hashPassword(password: string) {
 	return hashedPassword
 }
 
-function generateTokens(userId: string) {
+export function generateTokens(userId: string) {
 	const accessToken = generateJwtToken(
 		userId,
 		Number(process.env.JWT_ACCESS_TOKEN_TTL)
@@ -70,7 +70,9 @@ export async function registerUser(user: CreateUserInput['body']) {
 
 	const userObject = newUser.toObject()
 	delete userObject.password
-	return userObject
+
+	const tokens = generateTokens(String(userObject._id))
+	return { ...userObject, ...tokens }
 }
 
 export async function loginUser(email: string, password: string) {
@@ -106,8 +108,10 @@ export async function googleLogin(email: string, username: string) {
 	return generateTokens(String(userInDb._id))
 }
 
-export async function getUser(id?: string) {
-	const user = await userModel.findById(id).select('-password -__v -updatedAt')
+export async function getUser(id: string) {
+	const user = await userModel
+		.findById(new Types.ObjectId(id))
+		.select('-password -__v -updatedAt')
 	if (!user) {
 		throw new ApiError({
 			message: 'User not found',

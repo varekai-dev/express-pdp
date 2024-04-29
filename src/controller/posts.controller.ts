@@ -33,6 +33,12 @@ export async function getAllPostsHandler(req: Request, res: Response) {
 export async function getPostHandler(req: Request, res: Response) {
 	try {
 		const { id } = req.params
+		if (!id) {
+			res.sendStatus(404).json({
+				errorMessage: 'Post id not provided',
+			})
+		}
+
 		const post = await getPost(id)
 		res.send(post)
 	} catch (error) {
@@ -48,6 +54,13 @@ export async function createPostHandler(
 		const userId = req.user?.userId
 		const postData = req.body
 		let imageUrl
+
+		if (!userId) {
+			throw new ApiError({
+				message: 'User id not provided',
+				errorCode: 404,
+			})
+		}
 
 		if (req.file) {
 			imageUrl = await uploadToS3Handler(req.file)
@@ -75,6 +88,11 @@ export async function removePostHandler(
 	try {
 		const userId = req.user?.userId
 		const { id } = req.params
+		if (!id) {
+			res.sendStatus(404).json({
+				errorMessage: 'Post id not provided',
+			})
+		}
 		await removePost(id, userId)
 		res.status(204).send({
 			status: 'success',
@@ -91,6 +109,12 @@ export async function updatePostHandler(
 	const userId = req.user?.userId
 	const { id } = req.params
 	const data = req.body
+
+	if (!id) {
+		res.sendStatus(404).json({
+			errorMessage: 'Post id not provided',
+		})
+	}
 
 	try {
 		const post = await findOnePostOrFail(id)
@@ -117,6 +141,11 @@ export async function getPostDownloadHandler(
 	res: Response
 ) {
 	const { id } = req.params
+	if (!id) {
+		res.sendStatus(404).json({
+			errorMessage: 'Post id not provided',
+		})
+	}
 	const downloadUrl = await getPostDownload(id)
 	res.redirect(downloadUrl)
 	try {
@@ -128,6 +157,11 @@ export async function getPostDownloadHandler(
 export async function getPostRenderHandler(req: Request, res: Response) {
 	try {
 		const { id } = req.params
+		if (!id) {
+			res.sendStatus(404).json({
+				errorMessage: 'Post id not provided',
+			})
+		}
 		const post = await getPost(id)
 		res.render('post.template.hbs', post)
 	} catch (error) {

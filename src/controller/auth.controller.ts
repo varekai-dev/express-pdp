@@ -24,8 +24,8 @@ export async function httpPostRegisterHandler(
 export async function httpPostLoginHandler(req: Request, res: Response) {
 	try {
 		const { email, password } = req.body
-		const user = await userService.loginUser(email, password)
-		res.send(user)
+		const tokens = await userService.loginUser(email, password)
+		res.send(tokens)
 	} catch (error) {
 		handleError(error, res)
 	}

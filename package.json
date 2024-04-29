@@ -2,7 +2,7 @@
   "name": "express-pdp",
   "version": "1.0.0",
   "scripts": {
-    "test": "NODE_ENV=test jest",
+    "test": "NODE_ENV=test jest --detectOpenHandles",
     "test-watch": "NODE_ENV=test jest --watch",
     "build": "npx tsc",
     "start": "node dist/server",
@@ -15,6 +15,9 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/__test__/jest.setup.ts"
+    ],
     "transform": {
       "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
     },
@@ -48,7 +51,6 @@
     "@aws-sdk/client-s3": "^3.556.0",
     "@aws-sdk/s3-request-presigner": "^3.556.0",
     "@types/multer": "^1.4.11",
-    "aws-sdk": "^2.1601.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",
