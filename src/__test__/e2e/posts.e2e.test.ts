@@ -25,16 +25,21 @@ let fakePost = {
 
 describe('Posts API', () => {
 	let uploadToS3Spy: jest.SpyInstance
+	let getS3DownloadUrlSpy: jest.SpyInstance
 	beforeAll(async () => {
 		setupMongoServer()
 		token = await getAuthToken()
 		uploadToS3Spy = jest
 			.spyOn(uploadService, 'uploadToS3Handler')
 			.mockResolvedValue(fakeImageUrl)
+		getS3DownloadUrlSpy = jest
+			.spyOn(uploadService, 'getS3DownloadUrl')
+			.mockReturnValue(fakeImageUrl)
 	})
 	afterAll(() => {
 		teardownMongoServer()
 		uploadToS3Spy.mockRestore()
+		getS3DownloadUrlSpy.mockRestore()
 	})
 	it('should create new post', async () => {
 		const response = await request(app)
@@ -83,6 +88,23 @@ describe('Posts API', () => {
 			({ message }: { message: string }) => message
 		)
 		expect(responseErrors).toEqual(errors)
+	})
+
+	it('should render the post template with the post data', async () => {
+		const response = await request(app)
+			.get(`/api/v1/posts/${fakePost._id}/render`)
+			.expect(200)
+
+		expect(response.text).toContain(fakePost.title)
+		expect(response.text).toContain(fakePost.content)
+	})
+
+	it('should download the post file', async () => {
+		const response = await request(app)
+			.get(`/api/v1/posts/${fakePost._id}/download`)
+			.expect(302)
+
+		expect(response.header.location).toBe(fakeImageUrl)
 	})
 
 	it('should get all posts', async () => {
