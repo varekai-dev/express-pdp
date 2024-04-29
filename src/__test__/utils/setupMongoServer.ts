@@ -20,21 +20,18 @@ export async function setupMongoServer() {
 
 export async function teardownMongoServer() {
 	try {
-		await mongoose.disconnect()
+		await mongoose.connection.dropDatabase()
+		await mongoose.connection.close()
 		await mongoServer.stop()
 	} catch (e) {
 		console.error('teardownMongoServer', e)
 	}
 }
 
-export async function clearDatabase() {
-	try {
-		const collections = mongoose.connection.collections
-		for (const key in collections) {
-			const collection = collections[key]
-			await collection.deleteMany({})
-		}
-	} catch (e) {
-		console.error('clearDatabase', e)
+export async function clearMongoServerDb() {
+	const collections = mongoose.connection.collections
+	for (const key in collections) {
+		const collection = collections[key]
+		await collection.deleteMany({})
 	}
 }

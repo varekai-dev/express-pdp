@@ -4,7 +4,7 @@ import {
 	GetObjectCommand,
 	PutObjectCommand,
 } from '@aws-sdk/client-s3'
-import logger from '../utils/logger'
+import { logger } from '../utils/logger'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 import dotenv from 'dotenv'

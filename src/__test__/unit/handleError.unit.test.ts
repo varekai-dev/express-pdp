@@ -1,6 +1,6 @@
 import { ApiError } from '../../utils/apiError'
 import { handleError } from '../../utils/handleError'
-import * as logger from '../../utils/logger'
+import { logger } from '../../utils/logger'
 import { Response } from 'express'
 
 jest.mock('../../utils/logger')
@@ -18,7 +18,7 @@ describe('handleError', () => {
 
 		handleError(mockError, mockRes)
 
-		expect(logger.default.error).toHaveBeenCalledWith(mockError)
+		expect(logger.error).toHaveBeenCalledWith(mockError)
 		expect(mockRes.status).toHaveBeenCalledWith(mockError.errorCode)
 		expect(mockRes.send).toHaveBeenCalledWith({
 			errorMessage: mockError.message,
@@ -34,7 +34,7 @@ describe('handleError', () => {
 
 		handleError(mockError, mockRes)
 
-		expect(logger.default.error).toHaveBeenCalledWith(mockError)
+		expect(logger.error).toHaveBeenCalledWith(mockError)
 		expect(mockRes.status).toHaveBeenCalledWith(400)
 		expect(mockRes.send).toHaveBeenCalledWith({
 			errorMessage: mockError.message,

@@ -2,7 +2,7 @@
   "name": "express-pdp",
   "version": "1.0.0",
   "scripts": {
-    "test": "NODE_ENV=test jest --detectOpenHandles",
+    "test": "NODE_ENV=test jest",
     "test-watch": "NODE_ENV=test jest --watch",
     "build": "npx tsc",
     "start": "node dist/server",

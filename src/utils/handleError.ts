@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import logger from './logger'
+import { logger } from './logger'
 import { ApiError } from './apiError'
 
 export function handleError(error: unknown, res: Response) {

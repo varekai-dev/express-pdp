@@ -1,4 +1,4 @@
-import logger from '../../utils/logger'
+import { logger } from '../../utils/logger'
 
 describe('logger', () => {
 	it('should log a message', () => {

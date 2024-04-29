@@ -5,7 +5,7 @@ import { app } from '../../server'
 export async function createFakeUser() {
 	try {
 		const fakeUser = {
-			username: faker.internet.userName(),
+			username: faker.internet.userName().substring(0, 8),
 			email: faker.internet.email(),
 			password: faker.internet.password({
 				length: 8,
