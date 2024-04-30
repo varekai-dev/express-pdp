@@ -11,3 +11,5 @@ export const s3Client = new S3Client({
 		secretAccessKey: String(process.env.AWS_SECRET_ACCESS_KEY),
 	},
 })
+
+console.log('s3Client', s3Client)

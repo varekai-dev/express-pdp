@@ -1,4 +1,4 @@
-import { createS3Url } from '../../utils/createS3Url'
+import { createS3Url } from '../utils/createS3Url'
 
 describe('createS3Url', () => {
 	it('should return the correct S3 URL', () => {

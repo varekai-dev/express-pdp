@@ -39,8 +39,7 @@ describe('Posts API', () => {
 		getS3DownloadUrlSpy.mockRestore()
 	})
 	it('should create new post', async () => {
-		const { requestData, responseData } =
-			(await createFakePost(accessToken)) || {}
+		const { requestData, responseData } = await createFakePost(accessToken)
 
 		expect(responseData).toMatchObject({
 			title: requestData?.title,

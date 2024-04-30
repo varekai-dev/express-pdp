@@ -14,7 +14,7 @@ import { ApiError } from '../utils/apiError'
 
 dotenv.config()
 
-export async function uploadToS3Handler(file: Express.Multer.File) {
+export async function uploadToS3Handler(file?: Express.Multer.File) {
 	if (!file) {
 		logger.error('No file uploaded')
 		throw new ApiError({

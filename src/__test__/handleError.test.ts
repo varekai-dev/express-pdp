@@ -1,9 +1,9 @@
-import { ApiError } from '../../utils/apiError'
-import { handleError } from '../../utils/handleError'
-import { logger } from '../../utils/logger'
+import { ApiError } from '../utils/apiError'
+import { handleError } from '../utils/handleError'
+import { logger } from '../utils/logger'
 import { Response } from 'express'
 
-jest.mock('../../utils/logger')
+jest.mock('../utils/logger')
 
 describe('handleError', () => {
 	it('should handle ApiError', () => {

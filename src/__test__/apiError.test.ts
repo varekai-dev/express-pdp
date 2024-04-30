@@ -1,4 +1,4 @@
-import { ApiError } from '../../utils/apiError'
+import { ApiError } from '../utils/apiError'
 
 describe('ApiError', () => {
 	it('should create an instance of ApiError', () => {

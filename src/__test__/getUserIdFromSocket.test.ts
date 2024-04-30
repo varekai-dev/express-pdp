@@ -1,4 +1,4 @@
-import { getUserIdFromSocket } from '../../utils/getUserIdFromSocket'
+import { getUserIdFromSocket } from '../utils/getUserIdFromSocket'
 import * as jsonwebtoken from 'jsonwebtoken'
 import { Socket } from 'socket.io'
 
