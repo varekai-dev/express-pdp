@@ -1,7 +1,13 @@
 import { Request, Response } from 'express'
 import { CreateUserInput } from '../schemas/user.schema'
 import { handleError } from '../utils/handleError'
-import * as userService from '../service/user.service'
+import * as mongoUserService from '../service/mongo/user.mongo.service'
+import * as typeormUserService from '../service/typeorm/user.typeorm.service'
+
+const DATABASE_TYPE = process.env.DATABASE_TYPE
+
+const userService =
+	DATABASE_TYPE === 'mongo' ? mongoUserService : typeormUserService
 
 export async function httpPostRegisterHandler(
 	req: Request<{}, {}, CreateUserInput['body']>,

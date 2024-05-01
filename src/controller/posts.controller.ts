@@ -7,17 +7,17 @@ import {
 	getPostDownload,
 	removePost,
 	updatePost,
-} from '../service/posts.service'
+} from '../service/mongo/posts.mongo.service'
 import {
 	CreatePostInput,
 	DeletePostInput,
 	DownloadPostInput,
 	UpdatePostInput,
 } from '../schemas/posts.schema'
-import { uploadToS3Handler } from '../service/upload.service'
+import { uploadToS3Handler } from '../service/mongo/upload.mongo.service'
 import { handleError } from '../utils/handleError'
 import { sockets } from '../server'
-import { getUser } from '../service/user.service'
+import { getUser } from '../service/mongo/user.mongo.service'
 import { SocketType } from '../enums/socket-type.enum'
 import { ApiError } from '../utils/apiError'
 

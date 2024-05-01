@@ -9,7 +9,8 @@ import loggerMiddleware from './middleware/logger.middleware'
 import path from 'path'
 import './config/passport'
 import { initializeSocket } from './config/sockets'
-import mongoose from 'mongoose'
+import 'reflect-metadata'
+import { typeOrm } from './config/typeorm'
 
 const PORT = process.env.PORT || 8000
 
@@ -34,7 +35,14 @@ app.use('/api/v1', api)
 if (process.env.NODE_ENV !== 'test') {
 	server.listen(PORT, async () => {
 		logger.info(`Server is running on port ${PORT}`)
-		await mongoConnect()
+		if (process.env.DATABASE_TYPE === 'mongodb') {
+			await mongoConnect()
+			logger.info('Mongo connected')
+		}
+		if (process.env.DATABASE_TYPE === 'postgres') {
+			await typeOrm.initialize()
+			logger.info('Postgres connected')
+		}
 	})
 }
 

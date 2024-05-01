@@ -1,16 +1,16 @@
-import { s3Client } from '../config/aws'
+import { s3Client } from '../../config/aws'
 import {
 	DeleteObjectCommand,
 	GetObjectCommand,
 	PutObjectCommand,
 } from '@aws-sdk/client-s3'
-import { logger } from '../utils/logger'
+import { logger } from '../../utils/logger'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 import dotenv from 'dotenv'
-import { createS3Url } from '../utils/createS3Url'
+import { createS3Url } from '../../utils/createS3Url'
 
-import { ApiError } from '../utils/apiError'
+import { ApiError } from '../../utils/apiError'
 
 dotenv.config()
 

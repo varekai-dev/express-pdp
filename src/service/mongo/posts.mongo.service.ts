@@ -1,8 +1,8 @@
 import { UpdateQuery, Types } from 'mongoose'
-import postModel, { PostDocument } from '../models/post.model'
-import { CreatePostInput } from '../schemas/posts.schema'
-import { deleteFromS3Handler, getS3DownloadUrl } from './upload.service'
-import { ApiError } from '../utils/apiError'
+import postModel, { PostDocument } from '../../models/post.model'
+import { CreatePostInput } from '../../schemas/posts.schema'
+import { deleteFromS3Handler, getS3DownloadUrl } from './upload.mongo.service'
+import { ApiError } from '../../utils/apiError'
 
 export async function findOnePostOrFail(id: string) {
 	const post = await postModel

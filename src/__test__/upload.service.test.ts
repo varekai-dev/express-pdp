@@ -2,7 +2,7 @@ import {
 	deleteFromS3Handler,
 	getS3DownloadUrl,
 	uploadToS3Handler,
-} from '../service/upload.service'
+} from '../service/mongo/upload.mongo.service'
 import { ApiError } from '../utils/apiError'
 import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { createS3Url } from '../utils/createS3Url'

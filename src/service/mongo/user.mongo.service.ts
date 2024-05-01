@@ -1,10 +1,11 @@
-import { CreateUserInput } from '../schemas/user.schema'
+import { CreateUserInput } from '../../schemas/user.schema'
 import bcrypt from 'bcrypt'
-import userModel from '../models/user.model'
-import { AuthType } from '../enums/auth-type.enum'
-import jwt from 'jsonwebtoken'
+import userModel from '../../models/user.model'
+import { AuthType } from '../../enums/auth-type.enum'
 import { Types } from 'mongoose'
-import { ApiError } from '../utils/apiError'
+import { ApiError } from '../../utils/apiError'
+import { hashPassword } from '../../utils/hashPassword'
+import { generateTokens } from '../../utils/generateTokens'
 
 export async function findOneUserOrFail(id: string) {
 	const user = await userModel
@@ -17,31 +18,6 @@ export async function findOneUserOrFail(id: string) {
 		})
 	}
 	return user
-}
-
-function generateJwtToken(userId: string, expiresIn: number) {
-	return jwt.sign({ userId }, String(process.env.JWT_SECRET), {
-		expiresIn: expiresIn,
-	})
-}
-
-async function hashPassword(password: string) {
-	const salt = await bcrypt.genSalt(10)
-	const hashedPassword = await bcrypt.hash(password, salt)
-
-	return hashedPassword
-}
-
-export function generateTokens(userId: string) {
-	const accessToken = generateJwtToken(
-		userId,
-		Number(process.env.JWT_ACCESS_TOKEN_TTL)
-	)
-	const refreshToken = generateJwtToken(
-		userId,
-		Number(process.env.JWT_REFRESH_TOKEN_TTL)
-	)
-	return { accessToken, refreshToken }
 }
 
 export async function registerUser(user: CreateUserInput['body']) {
