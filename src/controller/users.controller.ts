@@ -1,7 +1,11 @@
 import { Request, Response } from 'express'
 import { handleError } from '../utils/handleError'
-import * as userService from '../service/mongo/user.mongo.service'
+import * as userMongoService from '../service/mongo/user.mongo.service'
+import * as userTypeormService from '../service/typeorm/user.typeorm.service'
 import { ApiError } from '../utils/apiError'
+
+const userService =
+	process.env.DATABASE_TYPE === 'mongo' ? userMongoService : userTypeormService
 
 export async function getMeHandler(req: Request, res: Response) {
 	try {

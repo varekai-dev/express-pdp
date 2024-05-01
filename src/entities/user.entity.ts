@@ -2,6 +2,9 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	JoinTable,
+	ManyToMany,
+	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
@@ -29,8 +32,12 @@ export class User {
 	})
 	password: string
 
-	@OneToMany(() => User, user => user._id, {})
-	subscribers: number[]
+	@ManyToMany(() => User, user => user.subscribed)
+	@JoinTable()
+	subscribers: User[]
+
+	@ManyToMany(() => User, user => user.subscribers)
+	subscribed: User[]
 
 	@CreateDateColumn()
 	createdDate: Date

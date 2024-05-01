@@ -11,8 +11,11 @@ import { Types } from 'mongoose'
 import type { StrategyOptionsWithoutRequest } from 'passport-jwt'
 
 import dotenv from 'dotenv'
+import { userRepository } from '../repository/user.repository'
 
 dotenv.config()
+
+const DATABASE_TYPE = process.env.DATABASE_TYPE
 
 const AUTH_GOOGLE_OPTIONS = {
 	callbackURL: '/api/v1/auth/google/callback',
@@ -37,7 +40,12 @@ const JWT_OPTIONS = {
 passport.use(
 	new JwtStrategy(JWT_OPTIONS, async function (payload, done) {
 		try {
-			const user = await userModel.findById(new Types.ObjectId(payload.userId))
+			let user
+			if (DATABASE_TYPE === 'mongodb') {
+				user = await userModel.findById(new Types.ObjectId(payload.userId))
+			} else {
+				user = await userRepository.findOneBy({ _id: +payload.userId })
+			}
 			if (!user) {
 				return done(null, false)
 			}
