@@ -15,12 +15,15 @@ export async function createFakeUser() {
 			.post('/api/v1/auth/register')
 			.send(fakeUser)
 
+
+      console.log('userResponse',userResponse)
 		if (userResponse) {
 			return {
 				...userResponse?.body,
 				password: fakeUser.password,
 			}
 		}
+    
 	} catch (error) {
 		console.error('createFakeUser', error)
 	}

@@ -7,7 +7,7 @@ import * as typeormUserService from '../service/typeorm/user.typeorm.service'
 const DATABASE_TYPE = process.env.DATABASE_TYPE
 
 const userService =
-	DATABASE_TYPE === 'mongo' ? mongoUserService : typeormUserService
+	DATABASE_TYPE === 'mongodb' ? mongoUserService : typeormUserService
 
 export async function httpPostRegisterHandler(
 	req: Request<{}, {}, CreateUserInput['body']>,

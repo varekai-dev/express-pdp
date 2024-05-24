@@ -9,6 +9,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
+import { AuthType } from '../enums/auth-type.enum'
 
 @Entity('User')
 export class User {
@@ -38,6 +39,9 @@ export class User {
 
 	@ManyToMany(() => User, user => user.subscribers)
 	subscribed: User[]
+
+	@Column({ default: AuthType.Local })
+	authType: AuthType
 
 	@CreateDateColumn()
 	createdDate: Date

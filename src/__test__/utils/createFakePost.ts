@@ -22,7 +22,7 @@ export async function createFakePost(accessToken: string) {
 			filename: fakePost.file.originalname,
 			contentType: fakePost.file.mimetype,
 		})
-
+console.log('response',response)
 	return {
 		requestData: {
 			title: fakePost.title,

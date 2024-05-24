@@ -5,7 +5,7 @@ import * as userTypeormService from '../service/typeorm/user.typeorm.service'
 import { ApiError } from '../utils/apiError'
 
 const userService =
-	process.env.DATABASE_TYPE === 'mongo' ? userMongoService : userTypeormService
+	process.env.DATABASE_TYPE === 'mongodb' ? userMongoService : userTypeormService
 
 export async function getMeHandler(req: Request, res: Response) {
 	try {

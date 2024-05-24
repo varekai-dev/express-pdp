@@ -49,7 +49,7 @@ passport.use(
 			if (!user) {
 				return done(null, false)
 			}
-
+console.log('user',user)
 			done(null, {
 				userId: user._id,
 			})

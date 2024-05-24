@@ -30,7 +30,7 @@ export class Post {
 	imageUrl: string
 
 	@OneToOne(() => User, user => user._id, { cascade: true })
-	createdBy: number
+	createdBy: User
 
 	@CreateDateColumn()
 	createdDate: Date

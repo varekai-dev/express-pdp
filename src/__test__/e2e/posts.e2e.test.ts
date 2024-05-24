@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { app } from '../../server'
 import { faker } from '@faker-js/faker'
-import * as uploadService from '../../service/mongo/upload.mongo.service'
+import * as uploadService from '../../service/upload.service'
 import { MAX_FILE_SIZE_MB } from '../../constants/maxSize'
 import { createFakeUser } from '../utils/createFakeUser'
 import { fakePost } from '../data/fakePost'

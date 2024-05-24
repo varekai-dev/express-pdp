@@ -1,29 +1,27 @@
 import { Request, Response } from 'express'
-import {
-	createPost,
-	findOnePostOrFail,
-	getAllPosts,
-	getPost,
-	getPostDownload,
-	removePost,
-	updatePost,
-} from '../service/mongo/posts.mongo.service'
+import * as postsMongoService from '../service/mongo/posts.mongo.service'
+import * as postsTypeormService from '../service/typeorm/posts.typeorm.service'
 import {
 	CreatePostInput,
 	DeletePostInput,
 	DownloadPostInput,
 	UpdatePostInput,
 } from '../schemas/posts.schema'
-import { uploadToS3Handler } from '../service/mongo/upload.mongo.service'
+import { uploadToS3Handler } from '../service/upload.service'
 import { handleError } from '../utils/handleError'
 import { sockets } from '../server'
 import { getUser } from '../service/mongo/user.mongo.service'
 import { SocketType } from '../enums/socket-type.enum'
 import { ApiError } from '../utils/apiError'
 
+const postsService =
+	process.env.DATABASE_TYPE === 'mongodb'
+		? postsMongoService
+		: postsTypeormService
+
 export async function getAllPostsHandler(req: Request, res: Response) {
 	try {
-		const posts = await getAllPosts()
+		const posts = await postsService.getAllPosts()
 		res.send(posts)
 	} catch (error) {
 		handleError(error, res)
@@ -39,7 +37,7 @@ export async function getPostHandler(req: Request, res: Response) {
 			})
 		}
 
-		const post = await getPost(id)
+		const post = await postsService.getPost(id)
 		res.send(post)
 	} catch (error) {
 		handleError(error, res)
@@ -65,7 +63,7 @@ export async function createPostHandler(
 		if (req.file) {
 			imageUrl = await uploadToS3Handler(req.file)
 		}
-		const newPost = await createPost({
+		const newPost = await postsService.createPost({
 			...postData,
 			imageUrl,
 			createdBy: String(userId),
@@ -93,7 +91,7 @@ export async function removePostHandler(
 				errorMessage: 'Post id not provided',
 			})
 		}
-		await removePost(id, userId)
+		await postsService.removePost(id, userId)
 		res.status(204).send({
 			status: 'success',
 		})
@@ -117,7 +115,7 @@ export async function updatePostHandler(
 	}
 
 	try {
-		const post = await findOnePostOrFail(id)
+		const post = await postsService.findOnePostOrFail(id)
 		if (String(userId) !== String(post.createdBy._id)) {
 			throw new ApiError({
 				message: 'You are not allowed to update this post',
@@ -129,7 +127,7 @@ export async function updatePostHandler(
 			const imageUrl = await uploadToS3Handler(req.file)
 			data.imageUrl = imageUrl
 		}
-		const updatedPost = await updatePost(id, data)
+		const updatedPost = await postsService.updatePost(id, data)
 		res.send(updatedPost)
 	} catch (error) {
 		handleError(error, res)
@@ -146,7 +144,7 @@ export async function getPostDownloadHandler(
 			errorMessage: 'Post id not provided',
 		})
 	}
-	const downloadUrl = await getPostDownload(id)
+	const downloadUrl = await postsService.getPostDownload(id)
 	res.redirect(downloadUrl)
 	try {
 	} catch (error) {
@@ -162,7 +160,7 @@ export async function getPostRenderHandler(req: Request, res: Response) {
 				errorMessage: 'Post id not provided',
 			})
 		}
-		const post = await getPost(id)
+		const post = await postsService.getPost(id)
 		res.render('post.template.hbs', post)
 	} catch (error) {
 		handleError(error, res)

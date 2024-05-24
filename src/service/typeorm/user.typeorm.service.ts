@@ -91,43 +91,48 @@ export async function getUser(id: string) {
 	return userObject
 }
 
-export async function subscribeUser(id: string, userId?: string) {
+export async function subscribeUser(
+	subscribeToId: string,
+	currentUserId?: string
+) {
 	let message = ''
-	const user = await userRepository.findOne({
-		where: { _id: Number(id) },
+	const subscribeToUser = await userRepository.findOne({
+		where: { _id: Number(subscribeToId) },
 		relations: ['subscribers'],
 	})
-	console.log('user', user)
-	if (!user) {
+
+	if (!subscribeToUser) {
 		throw new ApiError({
 			message: 'User not found',
 			errorCode: 404,
 		})
 	}
 
-	if (Number(id) === Number(userId)) {
+	if (Number(subscribeToId) === Number(currentUserId)) {
 		throw new ApiError({
 			message: 'You cannot subscribe to yourself',
 			errorCode: 400,
 		})
 	}
 
-	const isSubscribed = user.subscribers?.some(
-		user => user._id === Number(userId)
+	const isSubscribed = subscribeToUser.subscribers?.some(
+		user => user._id === Number(currentUserId)
 	)
 
 	if (isSubscribed) {
-		user.subscribers = user.subscribers.filter(
-			subscriber => subscriber._id !== Number(userId)
+		subscribeToUser.subscribers = subscribeToUser.subscribers.filter(
+			subscriber => subscriber._id !== Number(currentUserId)
 		)
 		message = 'Unsubscribed successfully'
 	} else {
-		const subscriber = await userRepository.findOneBy({ _id: Number(userId) })
+		const subscriber = await userRepository.findOneBy({
+			_id: Number(currentUserId),
+		})
 		if (subscriber) {
-			user.subscribers.push(subscriber)
+			subscribeToUser.subscribers.push(subscriber)
 		}
 		message = 'Subscribed successfully'
 	}
-	await userRepository.save(user)
+	await userRepository.save(subscribeToUser)
 	return message
 }
